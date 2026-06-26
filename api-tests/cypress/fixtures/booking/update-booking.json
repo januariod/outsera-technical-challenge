@@ -1,0 +1,23 @@
+{
+  "comment": "Fixtures para atualização de reservas. Usados em testes PUT e PATCH.",
+  "fullUpdate": {
+    "firstname": "James",
+    "lastname": "Brown",
+    "totalprice": 555,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2025-07-01",
+      "checkout": "2025-07-14"
+    },
+    "additionalneeds": "Airport pickup"
+  },
+  "partialUpdate": {
+    "comment": "Atualização parcial - apenas campos selecionados",
+    "firstname": "UpdatedName",
+    "totalprice": 999
+  },
+  "priceUpdate": {
+    "comment": "Atualização apenas do preço",
+    "totalprice": 777
+  }
+}

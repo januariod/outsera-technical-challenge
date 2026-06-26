@@ -1,0 +1,27 @@
+{
+  "comment": "Fixtures de usuários para testes E2E",
+  "validAdmin": {
+    "username": "admin",
+    "password": "password123"
+  },
+  "invalidPassword": {
+    "username": "admin",
+    "password": "wrongpassword"
+  },
+  "invalidUsername": {
+    "username": "notexist",
+    "password": "password123"
+  },
+  "emptyUsername": {
+    "username": "",
+    "password": "password123"
+  },
+  "emptyPassword": {
+    "username": "admin",
+    "password": ""
+  },
+  "bothEmpty": {
+    "username": "",
+    "password": ""
+  }
+}
