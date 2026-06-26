@@ -1,0 +1,49 @@
+{
+  "comment": "Fixtures de dados válidos para criação de reservas. Usados em testes positivos.",
+  "standard": {
+    "firstname": "Mary",
+    "lastname": "Brown",
+    "totalprice": 111,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2025-01-01",
+      "checkout": "2025-01-10"
+    },
+    "additionalneeds": "Breakfast"
+  },
+  "minimal": {
+    "comment": "Reserva mínima válida - apenas campos obrigatórios",
+    "firstname": "John",
+    "lastname": "Doe",
+    "totalprice": 200,
+    "depositpaid": false,
+    "bookingdates": {
+      "checkin": "2025-03-15",
+      "checkout": "2025-03-20"
+    }
+  },
+  "withSpecialCharacters": {
+    "comment": "Nomes com acentos e caracteres especiais",
+    "firstname": "João",
+    "lastname": "García-López",
+    "totalprice": 350,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2025-06-01",
+      "checkout": "2025-06-15"
+    },
+    "additionalneeds": "Late checkout & dinner"
+  },
+  "highValue": {
+    "comment": "Reserva de alto valor para testar limites de totalprice",
+    "firstname": "Alice",
+    "lastname": "Johnson",
+    "totalprice": 99999,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2025-12-24",
+      "checkout": "2025-12-31"
+    },
+    "additionalneeds": "Suite upgrade"
+  }
+}

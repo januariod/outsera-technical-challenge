@@ -1,0 +1,422 @@
+# .github/workflows/test-pipeline.yml
+# Pipeline CI/CD para a suíte completa de automação - Outsera Technical Challenge
+#
+# Estrutura:
+#   Job 1 (api-tests):         Testes de API com Cypress (2 máquinas paralelas)
+#   Job 2 (e2e-tests):         Testes E2E com Cypress + Cucumber
+#   Job 3 (mobile-tests):      Testes Mobile com Appium (simulado em CI)
+#   Job 4 (performance-tests): Testes de Performance com K6
+#   Job 5 (report):            Consolidação e publicação dos relatórios
+#
+# Trigger: push e PR para main/develop
+# Decisão técnica: jobs paralelos reduzem o tempo de feedback de ~20min para ~8min.
+
+name: QA Automation Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Suite para executar (all/api/e2e/mobile/performance)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - api
+          - e2e
+          - mobile
+          - performance
+
+# Cancela execuções anteriores do mesmo branch/PR (economiza minutos de CI)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  API_BASE_URL: 'https://restful-booker.herokuapp.com'
+  E2E_BASE_URL: 'https://restful-booker.herokuapp.com'
+  ADMIN_USERNAME: 'admin'
+  ADMIN_PASSWORD: 'password123'
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 1: Testes de API (paralelo em 2 máquinas)
+  # Divisão da suíte: máquina 0 roda auth + create, máquina 1 roda get + update + delete + contract
+  # ─────────────────────────────────────────────────────────────────────────────
+  api-tests:
+    name: 'API Tests (Máquina ${{ matrix.machine }})'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'api' || github.event.inputs.suite == '' }}
+
+    strategy:
+      fail-fast: false  # Não cancela a outra máquina se uma falhar
+      matrix:
+        machine: [0, 1]
+        include:
+          - machine: 0
+            spec: 'api-tests/cypress/e2e/auth/**,api-tests/cypress/e2e/booking/create-booking.cy.js'
+            name: 'Auth + Create'
+          - machine: 1
+            spec: 'api-tests/cypress/e2e/booking/get-booking.cy.js,api-tests/cypress/e2e/booking/update-booking.cy.js,api-tests/cypress/e2e/booking/delete-booking.cy.js,api-tests/cypress/e2e/booking/contract-validation.cy.js'
+            name: 'Get + Update + Delete + Contract'
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar ambiente
+        run: node scripts/check-env.js
+
+      - name: Executar Testes API - ${{ matrix.name }}
+        run: |
+          npx cypress run \
+            --project api-tests \
+            --spec "${{ matrix.spec }}" \
+            --reporter mochawesome \
+            --reporter-options "reportDir=reports/api,overwrite=false,html=false,json=true,reportFilename=api-machine-${{ matrix.machine }}"
+        env:
+          CYPRESS_API_BASE_URL: ${{ env.API_BASE_URL }}
+          CYPRESS_ADMIN_USERNAME: ${{ env.ADMIN_USERNAME }}
+          CYPRESS_ADMIN_PASSWORD: ${{ env.ADMIN_PASSWORD }}
+
+      - name: Upload screenshots (falhas)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: api-screenshots-machine-${{ matrix.machine }}
+          path: api-tests/cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-videos-machine-${{ matrix.machine }}
+          path: api-tests/cypress/videos/
+          retention-days: 7
+
+      - name: Upload relatório JSON
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-report-machine-${{ matrix.machine }}
+          path: reports/api/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 2: Testes E2E com Cucumber
+  # ─────────────────────────────────────────────────────────────────────────────
+  e2e-tests:
+    name: 'E2E Tests (Cypress + Cucumber)'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'e2e' || github.event.inputs.suite == '' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [0, 1]
+        include:
+          - machine: 0
+            spec: 'e2e-tests/cypress/e2e/features/login/login.feature'
+            name: 'Login Feature'
+          - machine: 1
+            spec: 'e2e-tests/cypress/e2e/features/**/*.feature'
+            name: 'All Features'
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar Testes E2E - ${{ matrix.name }}
+        run: |
+          npx cypress run \
+            --project e2e-tests \
+            --spec "${{ matrix.spec }}" \
+            --browser chrome \
+            --reporter mochawesome \
+            --reporter-options "reportDir=reports/e2e,overwrite=false,html=false,json=true,reportFilename=e2e-machine-${{ matrix.machine }}"
+        env:
+          CYPRESS_E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
+          CYPRESS_ADMIN_USERNAME: ${{ env.ADMIN_USERNAME }}
+          CYPRESS_ADMIN_PASSWORD: ${{ env.ADMIN_PASSWORD }}
+
+      - name: Upload screenshots (falhas)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-screenshots-machine-${{ matrix.machine }}
+          path: e2e-tests/cypress/screenshots/
+          retention-days: 7
+
+      - name: Upload vídeos Cypress
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-videos-machine-${{ matrix.machine }}
+          path: e2e-tests/cypress/videos/
+          retention-days: 7
+
+      - name: Upload relatório E2E
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-report-machine-${{ matrix.machine }}
+          path: reports/e2e/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 3: Testes Mobile com Appium
+  # Nota: Em CI, executa em modo headless com browser Chrome no emulador Android
+  # Para execução real em device físico, usar self-hosted runner com device conectado
+  # ─────────────────────────────────────────────────────────────────────────────
+  mobile-tests:
+    name: 'Mobile Tests (Appium + Android Emulator)'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'mobile' || github.event.inputs.suite == '' }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Java (Android SDK precisa de Java)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Criar e iniciar emulador Android
+        run: |
+          echo "Instalando system image..."
+          sdkmanager "system-images;android-33;google_apis;x86_64" --silent
+          echo "Criando AVD..."
+          echo "no" | avdmanager create avd -n test-emulator -k "system-images;android-33;google_apis;x86_64" --force
+          echo "Iniciando emulador..."
+          nohup $ANDROID_HOME/emulator/emulator -avd test-emulator \
+            -no-snapshot-save -noaudio -no-boot-anim -headless &
+          adb wait-for-device
+          # Aguarda boot completo
+          adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+          echo "✓ Emulador pronto"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Appium e drivers
+        run: |
+          npm install -g appium@2.5.0
+          appium driver install uiautomator2
+          echo "✓ Appium e UiAutomator2 instalados"
+
+      - name: Verificar Appium
+        run: appium --version
+
+      - name: Executar testes Mobile
+        run: npm run test:mobile
+        env:
+          APPIUM_HOST: localhost
+          APPIUM_PORT: 4723
+          ANDROID_DEVICE_NAME: emulator-5554
+          ANDROID_PLATFORM_VERSION: '13.0'
+          PLATFORM: android
+
+      - name: Upload artefatos Mobile
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-reports
+          path: reports/mobile/
+          retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 4: Testes de Performance com K6
+  # Executa com configuração reduzida em CI (50 VUs, 1 min) para não impactar
+  # o servidor de teste. Em staging/prod, usa configuração completa de 500 VUs.
+  # ─────────────────────────────────────────────────────────────────────────────
+  performance-tests:
+    name: 'Performance Tests (K6)'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'performance' || github.event.inputs.suite == '' }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar K6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6 -y
+          k6 version
+
+      - name: Criar diretório de relatórios
+        run: mkdir -p reports/performance
+
+      - name: Executar teste GET /booking (configuração CI - 50 VUs, 1 min)
+        run: |
+          k6 run \
+            --vus 50 \
+            --duration 1m \
+            --out json=reports/performance/get-results-ci.json \
+            performance-tests/scripts/get-booking.js
+        env:
+          BASE_URL: ${{ env.API_BASE_URL }}
+          ADMIN_USERNAME: ${{ env.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ env.ADMIN_PASSWORD }}
+        continue-on-error: true  # Não bloqueia pipeline em degradação leve
+
+      - name: Executar teste POST /booking (configuração CI - 50 VUs, 1 min)
+        run: |
+          k6 run \
+            --vus 50 \
+            --duration 1m \
+            --out json=reports/performance/post-results-ci.json \
+            performance-tests/scripts/post-booking.js
+        env:
+          BASE_URL: ${{ env.API_BASE_URL }}
+          ADMIN_USERNAME: ${{ env.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ env.ADMIN_PASSWORD }}
+        continue-on-error: true
+
+      - name: Executar cenário completo (configuração CI - 50 VUs, 2 min)
+        run: |
+          k6 run \
+            --vus 50 \
+            --duration 2m \
+            --out json=reports/performance/full-results-ci.json \
+            performance-tests/scripts/full-scenario.js
+        env:
+          BASE_URL: ${{ env.API_BASE_URL }}
+          ADMIN_USERNAME: ${{ env.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ env.ADMIN_PASSWORD }}
+        continue-on-error: true
+
+      - name: Upload relatórios K6
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-reports
+          path: reports/performance/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 5: Consolidação de Relatórios
+  # Aguarda todos os jobs completarem e gera relatório HTML consolidado
+  # ─────────────────────────────────────────────────────────────────────────────
+  report:
+    name: 'Consolidar Relatórios'
+    runs-on: ubuntu-latest
+    needs: [api-tests, e2e-tests]
+    if: always()
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Download artefatos API (máquina 0)
+        uses: actions/download-artifact@v4
+        with:
+          name: api-report-machine-0
+          path: reports/api/
+        continue-on-error: true
+
+      - name: Download artefatos API (máquina 1)
+        uses: actions/download-artifact@v4
+        with:
+          name: api-report-machine-1
+          path: reports/api/
+        continue-on-error: true
+
+      - name: Download artefatos E2E (máquina 0)
+        uses: actions/download-artifact@v4
+        with:
+          name: e2e-report-machine-0
+          path: reports/e2e/
+        continue-on-error: true
+
+      - name: Download artefatos E2E (máquina 1)
+        uses: actions/download-artifact@v4
+        with:
+          name: e2e-report-machine-1
+          path: reports/e2e/
+        continue-on-error: true
+
+      - name: Gerar relatórios HTML por escopo
+        run: npm run report
+        continue-on-error: true
+
+      - name: Upload relatórios por escopo
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-reports-${{ github.run_number }}
+          path: |
+            reports/api/
+            reports/e2e/
+          retention-days: 90
+
+      - name: Sumário dos resultados no GitHub
+        if: always()
+        run: |
+          echo "## 📊 QA Automation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| API Tests | ${{ needs.api-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:** [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

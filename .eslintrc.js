@@ -1,0 +1,43 @@
+// ESLint configuration for Outsera Technical Challenge
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    mocha: true,
+  },
+  plugins: ['cypress'],
+  extends: ['plugin:cypress/recommended'],
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: 'module',
+  },
+  globals: {
+    cy: 'readonly',
+    Cypress: 'readonly',
+    expect: 'readonly',
+    assert: 'readonly',
+    it: 'readonly',
+    describe: 'readonly',
+    before: 'readonly',
+    beforeEach: 'readonly',
+    after: 'readonly',
+    afterEach: 'readonly',
+    Given: 'readonly',
+    When: 'readonly',
+    Then: 'readonly',
+    And: 'readonly',
+  },
+  rules: {
+    'no-unused-vars': 'warn',
+    'no-console': 'warn',
+    'no-undef': 'error',
+    'prefer-const': 'warn',
+    'semi': ['error', 'never'],
+    'quotes': ['error', 'single'],
+    'indent': ['error', 2],
+    'cypress/no-unnecessary-waiting': 'warn',
+    'cypress/unsafe-to-chain-command': 'warn',
+  },
+  ignorePatterns: ['node_modules/', 'reports/'],
+}
