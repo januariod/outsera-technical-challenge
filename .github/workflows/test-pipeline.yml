@@ -193,10 +193,10 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Instalar Appium e drivers
+      - name: Verificar Appium e Drivers locais
         run: |
-          npm install -g appium@2.5.0
-          appium driver install uiautomator2
+          npx appium --version
+          npx appium driver list
 
       - name: Executar Testes Mobile (Android Emulator Action)
         uses: reactivecircus/android-emulator-runner@v2
