@@ -167,7 +167,7 @@ jobs:
 
   mobile-tests:
     name: 'Mobile Tests (Appium + Android Emulator)'
-    runs-on: macos-13 
+    runs-on: ubuntu-latest
     if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'mobile' || github.event.inputs.suite == '' }}
     steps:
       - name: Checkout código
@@ -221,7 +221,6 @@ jobs:
           name: mobile-reports
           path: reports/mobile/
           retention-days: 14
-
 
   performance-tests:
     name: 'Performance Tests (K6)'
