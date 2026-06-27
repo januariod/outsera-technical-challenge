@@ -1,47 +1,26 @@
-/**
- * api-tests/cypress/e2e/booking/create-booking.cy.js
- * Testes de criação de reserva - POST /booking
- *
- * Cobre: criação válida, campos obrigatórios, tipos inválidos,
- *        payload vazio, regras de negócio.
- */
-
 describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] }, () => {
   let validBookings
   let invalidBookings
-  let authToken
 
   before(() => {
-    // Carrega fixtures em paralelo
     cy.fixture('booking/valid-booking').then((data) => {
       validBookings = data
     })
     cy.fixture('booking/invalid-booking').then((data) => {
       invalidBookings = data
     })
-    // Obtém token de autenticação uma vez para toda a suíte
-    cy.createAuthToken().then((token) => {
-      authToken = token
-    })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Positivos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Positivos', () => {
+  context('Cenários Positivos', () => {
     it('deve criar reserva válida e retornar dados completos', () => {
       cy.createBooking(validBookings.standard).then((response) => {
-        // Status
         expect(response.status).to.eq(200, 'Criação de reserva deve retornar 200')
 
-        // Headers
         cy.assertResponseHeaders(response)
         expect(response.headers).to.have.property('content-type').and.include('application/json')
 
-        // Body - contrato de resposta
         cy.assertCreateBookingResponse(response, validBookings.standard)
 
-        // Armazena ID para uso em outros testes
         Cypress.env('CREATED_BOOKING_ID', response.body.bookingid)
       })
     })
@@ -87,7 +66,6 @@ describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] },
         expect(createResponse.status).to.eq(200)
         const bookingId = createResponse.body.bookingid
 
-        // Verifica que a reserva criada pode ser recuperada
         cy.getBooking(bookingId).then((getResponse) => {
           expect(getResponse.status).to.eq(200)
           expect(getResponse.body.firstname).to.eq(validBookings.standard.firstname)
@@ -98,13 +76,9 @@ describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] },
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Negativos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Negativos', () => {
+  context('Cenários Negativos', () => {
     it('deve rejeitar payload sem firstname', () => {
       cy.createBooking(invalidBookings.missingFirstname).then((response) => {
-        // A API pode retornar 400 ou 500 para dados inválidos
         expect(response.status).to.be.oneOf([400, 422, 500],
           'Payload sem firstname deve retornar erro')
       })
@@ -123,7 +97,9 @@ describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] },
     })
 
     it('deve rejeitar payload completamente vazio', () => {
-      cy.createBooking(invalidBookings.emptyPayload).then((response) => {
+      const emptyPayload = {}
+
+      cy.createBooking(emptyPayload).then((response) => {
         expect(response.status).to.be.oneOf([400, 422, 500])
       })
     })
@@ -139,7 +115,6 @@ describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] },
         body: JSON.stringify(validBookings.standard),
         failOnStatusCode: false,
       }).then((response) => {
-        // A API Restful Booker pode retornar 500 para Content-Type inválido
         expect(response.status).to.be.oneOf([200, 400, 415, 500])
       })
     })
