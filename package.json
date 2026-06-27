@@ -22,60 +22,50 @@
   "author": "Daniel Januario (djanuario@outlook.com.br)",
   "type": "commonjs",
   "scripts": {
-    "test:api": "cypress run --project api-tests --reporter mochawesome --reporter-options reportDir=reports/api,overwrite=false,html=false,json=true",
+    "test:api": "cypress run --project api-tests --reporter ../node_modules/mochawesome --reporter-options reportDir=../reports/api,overwrite=false,html=false,json=true",
     "test:api:open": "cypress open --project api-tests",
-    "test:e2e": "cypress run --project e2e-tests --reporter mochawesome --reporter-options reportDir=reports/e2e,overwrite=false,html=false,json=true",
+    "test:e2e": "cypress run --project e2e-tests --reporter ../node_modules/mochawesome --reporter-options reportDir=../reports/e2e,overwrite=false,html=false,json=true",
     "test:e2e:open": "cypress open --project e2e-tests",
     "test:mobile": "npx wdio run mobile-tests/config/wdio.conf.js",
-    "test:performance": "k6 run performance-tests/scripts/full-scenario.js",
-    "test:performance:get": "k6 run performance-tests/scripts/get-booking.js",
-    "test:performance:post": "k6 run performance-tests/scripts/post-booking.js",
-    "test:performance:report": "k6 run --out json=reports/performance/results.json performance-tests/scripts/full-scenario.js",
+    "test:performance": "k6 run performance-tests/scripts/load-test.js",
     "report": "node scripts/generate-reports.js",
-    "report:api": "marge \"reports/api/*.json\" -o reports/api -f index --reportTitle 'API Tests - Outsera QA'",
-    "report:e2e": "marge \"reports/e2e/*.json\" -o reports/e2e -f index --reportTitle 'E2E Tests - Outsera QA'",
+    "report:api": "marge reports/api/*.json -o reports/api -f index --reportTitle 'API Tests - Outsera QA'",
+    "report:e2e": "marge reports/e2e/*.json -o reports/e2e -f index --reportTitle 'E2E Tests - Outsera QA'",
+    "report:mobile": "marge reports/mobile/*.json -o reports/mobile -f index --reportTitle 'Mobile Tests - Outsera QA'",
     "lint": "eslint . --ext .js --ignore-path .eslintignore",
     "lint:fix": "eslint . --ext .js --ignore-path .eslintignore --fix",
-    "preinstall": "node -e \"if(process.versions.node.split('.')[0] < 18) { console.error('Node.js >= 18 required'); process.exit(1); }\""
+    "prepare": "husky"
   },
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
     "dotenv": "^16.4.5",
-    "uuid": "^9.0.1"
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
-    "cypress": "^13.17.0",
-    "@badeball/cypress-cucumber-preprocessor": "^20.1.2",
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.2",
-    "esbuild": "^0.23.0",
+    "@wdio/appium-service": "^9.29.0",
+    "@wdio/cli": "^9.29.0",
+    "@wdio/local-runner": "^9.29.0",
+    "@wdio/mocha-framework": "^9.29.1",
+    "@wdio/spec-reporter": "^9.29.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "mochawesome": "^7.1.3",
-    "mochawesome-merge": "^4.3.0",
-    "mochawesome-report-generator": "^6.2.0",
+    "appium": "^3.5.2",
+    "appium-uiautomator2-driver": "^8.0.0",
+    "chai": "^4.4.1",
+    "chalk": "^4.1.2",
+    "cypress": "^15.18.0",
     "cypress-real-events": "^1.13.0",
-    "webdriverio": "^8.36.0",
-    "@wdio/cli": "^8.36.0",
-    "@wdio/local-runner": "^8.36.0",
-    "@wdio/mocha-framework": "^8.36.0",
-    "@wdio/spec-reporter": "^8.36.0",
-    "@wdio/appium-service": "^8.36.0",
-    "appium": "^2.5.0",
+    "esbuild": "^0.28.1",
     "eslint": "^8.57.0",
     "eslint-plugin-cypress": "^3.3.0",
-    "chai": "^4.4.1",
+    "husky": "^9.1.7",
     "lodash": "^4.17.21",
-    "chalk": "^4.1.2"
-  },
-  "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": false,
-    "stepDefinitions": "e2e-tests/cypress/e2e/step-definitions/**/*.js",
-    "cucumberJson": {
-      "generate": true,
-      "outputFolder": "reports/e2e/cucumber",
-      "filePrefix": "",
-      "fileSuffix": ".cucumber"
-    }
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0",
+    "wdio-mochawesome-reporter": "^7.0.0",
+    "webdriverio": "^9.29.0"
   }
 }
-

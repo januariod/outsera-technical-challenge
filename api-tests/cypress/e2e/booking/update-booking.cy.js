@@ -1,11 +1,3 @@
-/**
- * api-tests/cypress/e2e/booking/update-booking.cy.js
- * Testes de atualização de reservas - PUT /booking/:id e PATCH /booking/:id
- *
- * Cobre: atualização completa (PUT), atualização parcial (PATCH),
- *        token inválido, ID inexistente, campos ausentes.
- */
-
 describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }, () => {
   let authToken
   let bookingId
@@ -16,14 +8,11 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
       updateData = data
     })
 
-    // Obtém token de autenticação
     cy.createAuthToken().then((token) => {
       authToken = token
     })
   })
 
-  // Cria uma reserva fresca antes de cada cenário de update
-  // para garantir isolamento entre testes
   beforeEach(() => {
     cy.createBooking({
       firstname: 'Original',
@@ -40,17 +29,13 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // PUT /booking/:id - Atualização Completa
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('PUT /booking/:id - Atualização Completa', () => {
+  context('PUT /booking/:id - Atualização Completa', () => {
     it('deve atualizar reserva completa com token válido', () => {
       cy.updateBooking(bookingId, updateData.fullUpdate, authToken).then((response) => {
         expect(response.status).to.eq(200)
         cy.assertResponseHeaders(response)
         cy.assertBookingSchema(response.body)
 
-        // Valida que os novos dados foram persistidos
         expect(response.body.firstname).to.eq(updateData.fullUpdate.firstname)
         expect(response.body.lastname).to.eq(updateData.fullUpdate.lastname)
         expect(response.body.totalprice).to.eq(updateData.fullUpdate.totalprice)
@@ -105,20 +90,15 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // PATCH /booking/:id - Atualização Parcial
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('PATCH /booking/:id - Atualização Parcial', () => {
+  context('PATCH /booking/:id - Atualização Parcial', () => {
     it('deve atualizar parcialmente uma reserva - apenas firstname e totalprice', () => {
       cy.patchBooking(bookingId, updateData.partialUpdate, authToken).then((response) => {
         expect(response.status).to.eq(200)
         cy.assertBookingSchema(response.body)
 
-        // Campos atualizados
         expect(response.body.firstname).to.eq(updateData.partialUpdate.firstname)
         expect(response.body.totalprice).to.eq(updateData.partialUpdate.totalprice)
 
-        // Campos originais devem ser mantidos
         expect(response.body.lastname).to.eq('Name')
       })
     })

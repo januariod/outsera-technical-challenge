@@ -1,11 +1,8 @@
-/**
- * api-tests/cypress/e2e/auth/auth.cy.js
- * Testes de autenticação - POST /auth
- *
- * Cobre: criação de token, credenciais inválidas, campos ausentes.
- */
-
 describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
+  const validCredentials = {
+    username: Cypress.env('ADMIN_USERNAME'),
+    password: Cypress.env('ADMIN_PASSWORD')
+  }
   let credentials
 
   before(() => {
@@ -14,24 +11,18 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Positivos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Positivos', () => {
+  context('Cenários Positivos', () => {
     it('deve retornar token válido com credenciais corretas', () => {
       cy.request({
         method: 'POST',
         url: '/auth',
         headers: { 'Content-Type': 'application/json' },
-        body: credentials.valid,
+        body: validCredentials,
       }).then((response) => {
-        // Status
         expect(response.status).to.eq(200)
 
-        // Headers
         cy.assertResponseHeaders(response)
 
-        // Body
         expect(response.body).to.have.property('token')
         expect(response.body.token).to.be.a('string').and.have.length.greaterThan(0)
         expect(response.body.token).to.not.eq('Bad credentials')
@@ -45,7 +36,7 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
         method: 'POST',
         url: '/auth',
         headers: { 'Content-Type': 'application/json' },
-        body: credentials.valid,
+        body: validCredentials,
       }).then((r1) => {
         tokens.push(r1.body.token)
 
@@ -53,10 +44,9 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
           method: 'POST',
           url: '/auth',
           headers: { 'Content-Type': 'application/json' },
-          body: credentials.valid,
+          body: validCredentials,
         }).then((r2) => {
           tokens.push(r2.body.token)
-          // Tokens podem ser iguais (sem rotação) ou diferentes - apenas validamos que ambos são strings válidas
           tokens.forEach((t) => {
             expect(t).to.be.a('string').and.have.length.greaterThan(0)
           })
@@ -65,10 +55,7 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Negativos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Negativos', () => {
+  context('Cenários Negativos', () => {
     it('deve retornar "Bad credentials" com senha inválida', () => {
       cy.request({
         method: 'POST',
@@ -77,7 +64,7 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
         body: credentials.invalidPassword,
         failOnStatusCode: false,
       }).then((response) => {
-        expect(response.status).to.eq(200) // API retorna 200 mesmo com credenciais inválidas
+        expect(response.status).to.eq(200)
         expect(response.body).to.have.property('reason')
         expect(response.body.reason).to.include('Bad credentials')
       })
@@ -117,7 +104,6 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
         body: credentials.valid,
         failOnStatusCode: false,
       }).then((response) => {
-        // Pode aceitar ou rejeitar - validamos que a resposta é estruturada
         expect(response.status).to.be.oneOf([200, 400, 415])
       })
     })

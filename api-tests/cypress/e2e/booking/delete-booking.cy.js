@@ -1,11 +1,3 @@
-/**
- * api-tests/cypress/e2e/booking/delete-booking.cy.js
- * Testes de remoção de reservas - DELETE /booking/:id
- *
- * Cobre: deleção com token válido, confirmação de remoção via GET,
- *        token inválido, ausente, ID inexistente.
- */
-
 describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () => {
   let authToken
   let bookingIdToDelete
@@ -16,7 +8,6 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
     })
   })
 
-  // Cria reserva fresca para cada cenário de delete
   beforeEach(() => {
     cy.createBooking({
       firstname: 'Delete',
@@ -33,13 +24,9 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Positivos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Positivos', () => {
+  context('Cenários Positivos', () => {
     it('deve deletar reserva com token válido e retornar 201', () => {
       cy.deleteBooking(bookingIdToDelete, authToken).then((response) => {
-        // A API Restful Booker retorna 201 para DELETE bem-sucedido
         expect(response.status).to.eq(201, 'DELETE bem-sucedido deve retornar 201')
       })
     })
@@ -48,7 +35,6 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
       cy.deleteBooking(bookingIdToDelete, authToken).then((deleteResponse) => {
         expect(deleteResponse.status).to.eq(201)
 
-        // Verificação de persistência: a reserva não deve mais existir
         cy.getBooking(bookingIdToDelete).then((getResponse) => {
           expect(getResponse.status).to.eq(404, 'Reserva deletada deve retornar 404 no GET')
         })
@@ -59,7 +45,6 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
       cy.deleteBooking(bookingIdToDelete, authToken).then((deleteResponse) => {
         expect(deleteResponse.status).to.eq(201)
 
-        // Verifica que o ID não aparece mais na listagem
         cy.getAllBookings().then((listResponse) => {
           const found = listResponse.body.find((b) => b.bookingid === bookingIdToDelete)
           expect(found).to.be.undefined
@@ -68,10 +53,7 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
     })
   })
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Cenários Negativos
-  // ─────────────────────────────────────────────────────────────────────────
-  describe('Cenários Negativos', () => {
+  context('Cenários Negativos', () => {
     it('deve retornar 403 ao deletar sem token de autenticação', () => {
       cy.request({
         method: 'DELETE',

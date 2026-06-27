@@ -1,7 +1,5 @@
 {
-  "comment": "Fixtures de dados inválidos para testes negativos. Cada entrada representa um cenário de erro diferente.",
   "missingFirstname": {
-    "comment": "Campo obrigatório 'firstname' ausente",
     "lastname": "Smith",
     "totalprice": 100,
     "depositpaid": true,
@@ -11,7 +9,6 @@
     }
   },
   "missingLastname": {
-    "comment": "Campo obrigatório 'lastname' ausente",
     "firstname": "Bob",
     "totalprice": 100,
     "depositpaid": true,
@@ -21,14 +18,12 @@
     }
   },
   "missingBookingDates": {
-    "comment": "Campo obrigatório 'bookingdates' ausente",
     "firstname": "Carol",
     "lastname": "White",
     "totalprice": 100,
     "depositpaid": true
   },
   "invalidTotalprice": {
-    "comment": "Tipo inválido para totalprice (string em vez de number)",
     "firstname": "Dave",
     "lastname": "Black",
     "totalprice": "not-a-number",
@@ -39,7 +34,6 @@
     }
   },
   "invalidDateFormat": {
-    "comment": "Formato de data inválido (DD/MM/YYYY em vez de YYYY-MM-DD)",
     "firstname": "Eve",
     "lastname": "Green",
     "totalprice": 150,
@@ -49,11 +43,7 @@
       "checkout": "05/01/2025"
     }
   },
-  "emptyPayload": {
-    "comment": "Payload completamente vazio"
-  },
   "nullValues": {
-    "comment": "Campos com valores null",
     "firstname": null,
     "lastname": null,
     "totalprice": null,
@@ -61,7 +51,6 @@
     "bookingdates": null
   },
   "negativeTotalprice": {
-    "comment": "Regra de negócio: preço negativo não deveria ser aceito",
     "firstname": "Frank",
     "lastname": "Gray",
     "totalprice": -100,

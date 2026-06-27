@@ -1,5 +1,4 @@
 {
-  "comment": "Fixtures de dados válidos para criação de reservas. Usados em testes positivos.",
   "standard": {
     "firstname": "Mary",
     "lastname": "Brown",
@@ -12,7 +11,6 @@
     "additionalneeds": "Breakfast"
   },
   "minimal": {
-    "comment": "Reserva mínima válida - apenas campos obrigatórios",
     "firstname": "John",
     "lastname": "Doe",
     "totalprice": 200,
@@ -23,7 +21,6 @@
     }
   },
   "withSpecialCharacters": {
-    "comment": "Nomes com acentos e caracteres especiais",
     "firstname": "João",
     "lastname": "García-López",
     "totalprice": 350,
@@ -35,7 +32,6 @@
     "additionalneeds": "Late checkout & dinner"
   },
   "highValue": {
-    "comment": "Reserva de alto valor para testar limites de totalprice",
     "firstname": "Alice",
     "lastname": "Johnson",
     "totalprice": 99999,

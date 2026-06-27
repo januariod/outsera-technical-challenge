@@ -1,4 +1,3 @@
-// ESLint configuration for Outsera Technical Challenge
 module.exports = {
   env: {
     browser: true,
@@ -27,6 +26,10 @@ module.exports = {
     When: 'readonly',
     Then: 'readonly',
     And: 'readonly',
+    $: 'readonly',
+    $$: 'readonly',
+    browser: 'readonly',
+    driver: 'readonly'
   },
   rules: {
     'no-unused-vars': 'warn',
@@ -38,6 +41,8 @@ module.exports = {
     'indent': ['error', 2],
     'cypress/no-unnecessary-waiting': 'warn',
     'cypress/unsafe-to-chain-command': 'warn',
+    'no-console': 'off',
+    'cypress/unsafe-to-chain-command': 'off'
   },
   ignorePatterns: ['node_modules/', 'reports/'],
 }

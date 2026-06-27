@@ -1,8 +1,3 @@
-# e2e-tests/.cypress-cucumber-preprocessorrc.json
-# Configuração do preprocessor Cucumber para o projeto E2E.
-# Decisão técnica: nonGlobalStepDefinitions=false permite usar um diretório
-# centralizado de step definitions, simplificando a organização para projetos
-# com múltiplas features compartilhando passos em comum.
 {
   "nonGlobalStepDefinitions": false,
   "stepDefinitions": [

@@ -21,8 +21,8 @@ e2e-tests/cypress/videos/
 e2e-tests/cypress/downloads/
 
 # ── Relatórios gerados (mantém estrutura: .gitkeep e README) ──────────────────
+reports/**/assets/
 reports/**/*.json
-reports/**/*.html
 reports/**/*.png
 reports/**/*.log
 reports/**/cucumber/
@@ -54,9 +54,12 @@ tmp/
 temp/
 .tmp/
 
-# ── Cypress Cache ────────────────────────────────────────────────────────────
+# ── Cypress ────────────────────────────────────────────────────────────
 .cypress_cache/
+api-tests/cypress.env.json
 
+# ── Mobile ────────────────────────────────────────────────────────────
+mobile-tests/app/*.apk
 
 # Optional npm cache directory
 .npm
