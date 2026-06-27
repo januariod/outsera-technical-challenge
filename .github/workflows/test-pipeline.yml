@@ -1,4 +1,4 @@
-# Decisão técnica: jobs paralelos reduzem o tempo de feedback de ~20min para ~8min.
+# Decisão técnica: jobs paralelos reduzem o tempo de feedback
 name: QA Automation Pipeline
 
 on:
@@ -196,7 +196,7 @@ jobs:
       - name: Criar e iniciar emulador Android
         run: |
           echo "Instalando system image..."
-          sdkmanager "system-images;android-33;google_apis;x86_64" --silent
+          echo "y" | sdkmanager "system-images;android-33;google_apis;x86_64"
           echo "Criando AVD..."
           echo "no" | avdmanager create avd -n test-emulator -k "system-images;android-33;google_apis;x86_64" --force
           echo "Iniciando emulador..."
