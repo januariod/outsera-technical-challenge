@@ -69,8 +69,8 @@ jobs:
           npx cypress run \
             --project api-tests \
             --spec "${{ matrix.spec }}" \
-            --reporter mochawesome \
-            --reporter-options "reportDir=reports/api,overwrite=false,html=false,json=true,reportFilename=api-machine-${{ matrix.machine }}"
+            --reporter ../node_modules/mochawesome \
+            --reporter-options "reportDir=../reports/api,overwrite=false,html=false,json=true,reportFilename=api-machine-${{ matrix.machine }}"
         env:
           CYPRESS_API_BASE_URL: ${{ env.API_BASE_URL }}
           CYPRESS_ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
@@ -134,8 +134,8 @@ jobs:
             --project e2e-tests \
             --spec "${{ matrix.spec }}" \
             --browser chrome \
-            --reporter mochawesome \
-            --reporter-options "reportDir=reports/e2e,overwrite=false,html=false,json=true,reportFilename=e2e-machine-${{ matrix.machine }}"
+            --reporter ../node_modules/mochawesome \
+            --reporter-options "reportDir=../reports/e2e,overwrite=false,html=false,json=true,reportFilename=e2e-machine-${{ matrix.machine }}"
         env:
           CYPRESS_E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
           CYPRESS_SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
@@ -167,7 +167,7 @@ jobs:
 
   mobile-tests:
     name: 'Mobile Tests (Appium + Android Emulator)'
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: ${{ github.event.inputs.suite == 'all' || github.event.inputs.suite == 'mobile' || github.event.inputs.suite == '' }}
     steps:
       - name: Checkout código
@@ -185,26 +185,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Download App de Teste
         run: |
           mkdir -p mobile-tests/app
           curl -L -o mobile-tests/app/Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
-
-      - name: Criar e iniciar emulador Android
-        run: |
-          echo "Instalando system image..."
-          echo "y" | sdkmanager "system-images;android-33;google_apis;x86_64"
-          echo "Criando AVD..."
-          echo "no" | avdmanager create avd -n test-emulator -k "system-images;android-33;google_apis;x86_64" --force
-          echo "Iniciando emulador..."
-          nohup $ANDROID_HOME/emulator/emulator -avd test-emulator \
-            -no-snapshot-save -noaudio -no-boot-anim -headless &
-          adb wait-for-device
-          adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
-          echo "Emulador pronto"
 
       - name: Instalar dependências
         run: npm ci
@@ -213,18 +197,21 @@ jobs:
         run: |
           npm install -g appium@2.5.0
           appium driver install uiautomator2
-          echo "✓ Appium e UiAutomator2 instalados"
 
-      - name: Verificar Appium
-        run: appium --version
-
-      - name: Executar testes Mobile
-        run: npm run test:mobile
+      - name: Executar Testes Mobile (Android Emulator Action)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 5X
+          disable-animations: true
+          script: npm run test:mobile
         env:
           APPIUM_HOST: localhost
           APPIUM_PORT: 4723
           ANDROID_DEVICE_NAME: emulator-5554
-          ANDROID_PLATFORM_VERSION: '13.0'
+          ANDROID_PLATFORM_VERSION: '9.0'
           PLATFORM: android
 
       - name: Upload artefatos Mobile
@@ -234,6 +221,7 @@ jobs:
           name: mobile-reports
           path: reports/mobile/
           retention-days: 14
+
 
   performance-tests:
     name: 'Performance Tests (K6)'
@@ -248,7 +236,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          
+
       - name: Instalar dependências
         run: npm ci
 
