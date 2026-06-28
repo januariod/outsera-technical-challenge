@@ -155,8 +155,6 @@ mkdir -p mobile-tests/app
 curl -L -o mobile-tests/app/Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
 ```
 
-*(O emulador Android precisa estar iniciado. Recomendação: API 28 a 33)*
-
 ```bash
 npm run test:mobile     # Executa a suite nativa no WebdriverIO
 ```
