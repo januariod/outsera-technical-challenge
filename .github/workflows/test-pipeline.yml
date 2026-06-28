@@ -69,8 +69,7 @@ jobs:
           npx cypress run \
             --project api-tests \
             --spec "${{ matrix.spec }}" \
-            --reporter ../node_modules/mochawesome \
-            --reporter-options "reportDir=../reports/api,overwrite=false,html=false,json=true,reportFilename=api-machine-${{ matrix.machine }}"
+            --reporter-options "reportFilename=api-machine-${{ matrix.machine }}"
         env:
           CYPRESS_API_BASE_URL: ${{ env.API_BASE_URL }}
           CYPRESS_ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
@@ -134,8 +133,7 @@ jobs:
             --project e2e-tests \
             --spec "${{ matrix.spec }}" \
             --browser chrome \
-            --reporter ../node_modules/mochawesome \
-            --reporter-options "reportDir=../reports/e2e,overwrite=false,html=false,json=true,reportFilename=e2e-machine-${{ matrix.machine }}"
+            --reporter-options "reportFilename=e2e-machine-${{ matrix.machine }}"
         env:
           CYPRESS_E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
           CYPRESS_SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
@@ -228,7 +226,6 @@ jobs:
           name: mobile-reports
           path: reports/mobile/
           retention-days: 14
-
 
   performance-tests:
     name: 'Performance Tests (K6)'

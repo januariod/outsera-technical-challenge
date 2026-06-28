@@ -8,6 +8,13 @@ const {
 } = require('@badeball/cypress-cucumber-preprocessor/esbuild')
 
 module.exports = defineConfig({
+  reporter: '../node_modules/mochawesome',
+  reporterOptions: {
+    reportDir: '../reports/e2e',
+    overwrite: false,
+    html: false,
+    json: true
+  },
   e2e: {
     specPattern: 'cypress/e2e/features/**/*.feature',
     supportFile: 'cypress/support/e2e.js',
