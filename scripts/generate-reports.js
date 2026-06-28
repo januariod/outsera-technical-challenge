@@ -13,7 +13,7 @@ const SCOPES = [
 
 function generateScopeReport({ dir, title }) {
   const scopeDir = path.join(REPORTS_DIR, dir)
-
+  
   if (!fs.existsSync(scopeDir)) {
     console.log(chalk.yellow(`⚠  ${dir}: pasta inexistente, pulando.`))
     return false
@@ -35,10 +35,16 @@ function generateScopeReport({ dir, title }) {
   })
 
   execSync(
-    `npx marge "${mergedJson}" -o "${scopeDir}" -f index ` +
-      `--reportTitle "${title}" --reportPageTitle "Outsera QA - ${dir.toUpperCase()}"`,
+    `npx marge "${mergedJson}" -o "${scopeDir}" -f index --inline ` +
+    `--reportTitle "${title}" --reportPageTitle "Outsera QA - ${dir.toUpperCase()}"`,
     { stdio: 'inherit' },
   )
+
+  fs.readdirSync(scopeDir).forEach(file => {
+    if (file.endsWith('.json')) {
+      fs.unlinkSync(path.join(scopeDir, file))
+    }
+  })
 
   console.log(chalk.green(`✓  ${dir}: ${path.join(scopeDir, 'index.html')}`))
   return true
@@ -56,4 +62,4 @@ if (generated === 0) {
   process.exit(0)
 }
 
-console.log(chalk.cyan(`\n✓  ${generated} relatório(s) gerado(s). Cada escopo está isolado em sua pasta.\n`))
+console.log(chalk.cyan(`\n✓  ${generated} relatório(s) gerado(s). Pastas limpas apenas com HTML!\n`))
