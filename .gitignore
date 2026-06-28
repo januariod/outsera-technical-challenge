@@ -27,7 +27,6 @@ reports/**/*.png
 reports/**/*.log
 reports/**/cucumber/
 reports/**/screenshots/
-!reports/**/.gitkeep
 !reports/README.md
 
 # ── Variáveis de ambiente ─────────────────────────────────────────────────────

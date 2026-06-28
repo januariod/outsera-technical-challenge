@@ -146,7 +146,14 @@ npm run test:e2e        # Roda todos os cenários Gherkin em headless
 npm run test:e2e:open   # Abre a interface interativa do Cypress
 ```
 
-### Testes Mobile (Appium)
+### 📱 Testes Mobile (Appium)
+> **Pré-requisito:** O emulador Android precisa estar iniciado (Recomendação: API 28 a 33).
+
+Como não commitamos binários no repositório, baixe o APK de teste rodando o comando abaixo na raiz do projeto antes da primeira execução:
+```bash
+mkdir -p mobile-tests/app
+curl -L -o mobile-tests/app/Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
+```
 
 *(O emulador Android precisa estar iniciado. Recomendação: API 28 a 33)*
 
