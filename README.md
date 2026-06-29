@@ -107,7 +107,7 @@ npx appium driver install uiautomator2
 
 ## Configuração de Ambiente
 
-**Segurança em Primeiro Lugar:** Nenhuma credencial sensível é comitada neste repositório.
+**Credenciais Segurança:** Nenhuma credencial sensível é comitada neste repositório.
 
 **1. Execução no CI/CD (GitHub Actions):**
 O pipeline lê dinamicamente as variáveis de ambiente e senhas injetadas via **GitHub Secrets**.
