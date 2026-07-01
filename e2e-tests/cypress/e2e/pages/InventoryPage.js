@@ -1,10 +1,3 @@
-/**
- * Page Object da tela de Produtos / Inventário (SauceDemo).
- *
- * Seletores centralizados em `elements` para reaproveitamento em qualquer step.
- * Métodos parametrizados (ex.: `addProductToCart`) evitam duplicação e permitem
- * escalar para outros produtos sem criar um método por item.
- */
 class InventoryPage {
   elements = {
     title: () => cy.get('.title'),
@@ -22,10 +15,6 @@ class InventoryPage {
     return this
   }
 
-  /**
-   * Adiciona um produto ao carrinho pelo seu slug data-test.
-   * @param {string} [productSlug='sauce-labs-backpack']
-   */
   addProductToCart(productSlug = 'sauce-labs-backpack') {
     this.elements.addToCartButton(productSlug).click()
     return this

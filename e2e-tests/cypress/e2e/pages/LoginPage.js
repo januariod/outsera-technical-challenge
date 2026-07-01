@@ -1,11 +1,3 @@
-/**
- * Page Object da tela de Login (SauceDemo).
- *
- * Os seletores ficam centralizados em `elements`, onde cada entrada é uma função
- * que retorna o Cypress chainable do elemento. Isso permite reaproveitar o mesmo
- * mapeamento em qualquer step ou teste — inclusive para asserções específicas —
- * sem duplicar seletores. Ex.: `LoginPage.elements.usernameInput().should('be.visible')`.
- */
 class LoginPage {
   elements = {
     usernameInput: () => cy.get('[data-test="username"]'),

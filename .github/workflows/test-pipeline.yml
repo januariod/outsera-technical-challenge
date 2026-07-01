@@ -354,7 +354,7 @@ jobs:
       - name: Sumário dos resultados no GitHub
         if: always()
         run: |
-          echo "## 📊 QA Automation Results" >> $GITHUB_STEP_SUMMARY
+          echo "## QA Automation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
