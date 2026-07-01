@@ -1,10 +1,3 @@
-/**
- * Page Object do fluxo de Carrinho e Checkout (SauceDemo).
- *
- * Seletores centralizados em `elements`. Os métodos de verificação cobrem não só
- * o comportamento principal (sucesso/erro), mas também o conteúdo do carrinho e o
- * resumo financeiro da compra (item, quantidade, preço, subtotal, imposto e total).
- */
 class CheckoutPage {
   elements = {
     cartItem: () => cy.get('.cart_item'),
@@ -52,12 +45,6 @@ class CheckoutPage {
     return this
   }
 
-  /**
-   * Valida um item presente no carrinho/resumo pelo nome, preço e quantidade.
-   * @param {string} name  Nome exibido do produto.
-   * @param {string} price Preço formatado (ex.: "$29.99").
-   * @param {number} [quantity=1] Quantidade esperada.
-   */
   verifyCartItem(name, price, quantity = 1) {
     this.elements.cartItem().should('have.length', 1)
     this.elements.itemName().should('have.text', name)
@@ -66,10 +53,6 @@ class CheckoutPage {
     return this
   }
 
-  /**
-   * Valida o resumo financeiro da compra na tela de overview.
-   * @param {{ subtotal: string, tax: string, total: string }} summary
-   */
   verifyOrderSummary({ subtotal, tax, total }) {
     this.elements.subtotalLabel().should('contain.text', subtotal)
     this.elements.taxLabel().should('contain.text', tax)

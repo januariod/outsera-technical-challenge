@@ -62,7 +62,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Executar Testes API - ${{ matrix.name }}
         run: |
@@ -125,7 +125,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Executar Testes E2E - ${{ matrix.name }}
         run: |
@@ -196,7 +196,7 @@ jobs:
           curl -L -o mobile-tests/app/Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Verificar Appium e Drivers locais
         run: |
@@ -244,7 +244,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Instalar K6
         run: |
@@ -291,7 +291,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Download artefatos API (máquina 0)
         uses: actions/download-artifact@v4
@@ -354,7 +354,7 @@ jobs:
       - name: Sumário dos resultados no GitHub
         if: always()
         run: |
-          echo "## 📊 QA Automation Results" >> $GITHUB_STEP_SUMMARY
+          echo "## QA Automation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
