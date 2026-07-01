@@ -1,18 +1,12 @@
+import { buildBooking } from '../../support/factories/booking.factory'
+
 describe('BOOKING - GET /booking', { tags: ['@booking', '@get', '@smoke'] }, () => {
   let createdBookingId
+  let createdBooking
 
   before(() => {
-    cy.createBooking({
-      firstname: 'QueryTest',
-      lastname: 'User',
-      totalprice: 123,
-      depositpaid: true,
-      bookingdates: {
-        checkin: '2025-02-01',
-        checkout: '2025-02-10',
-      },
-      additionalneeds: 'Test setup booking',
-    }).then((response) => {
+    createdBooking = buildBooking({ additionalneeds: 'Test setup booking' })
+    cy.createBooking(createdBooking).then((response) => {
       expect(response.status).to.eq(200)
       createdBookingId = response.body.bookingid
     })
@@ -41,7 +35,7 @@ describe('BOOKING - GET /booking', { tags: ['@booking', '@get', '@smoke'] }, () 
     })
 
     it('deve filtrar reservas por firstname', () => {
-      cy.getAllBookings({ firstname: 'QueryTest' }).then((response) => {
+      cy.getAllBookings({ firstname: createdBooking.firstname }).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body).to.be.an('array')
         const found = response.body.find((b) => b.bookingid === createdBookingId)
@@ -50,14 +44,14 @@ describe('BOOKING - GET /booking', { tags: ['@booking', '@get', '@smoke'] }, () 
     })
 
     it('deve filtrar reservas por lastname', () => {
-      cy.getAllBookings({ lastname: 'User' }).then((response) => {
+      cy.getAllBookings({ lastname: createdBooking.lastname }).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body).to.be.an('array')
       })
     })
 
     it('deve filtrar reservas por checkin', () => {
-      cy.getAllBookings({ checkin: '2025-02-01' }).then((response) => {
+      cy.getAllBookings({ checkin: createdBooking.bookingdates.checkin }).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body).to.be.an('array')
       })
@@ -78,10 +72,10 @@ describe('BOOKING - GET /booking', { tags: ['@booking', '@get', '@smoke'] }, () 
         cy.assertResponseHeaders(response)
         cy.assertBookingSchema(response.body)
 
-        expect(response.body.firstname).to.eq('QueryTest')
-        expect(response.body.lastname).to.eq('User')
-        expect(response.body.totalprice).to.eq(123)
-        expect(response.body.depositpaid).to.eq(true)
+        expect(response.body.firstname).to.eq(createdBooking.firstname)
+        expect(response.body.lastname).to.eq(createdBooking.lastname)
+        expect(response.body.totalprice).to.eq(createdBooking.totalprice)
+        expect(response.body.depositpaid).to.eq(createdBooking.depositpaid)
       })
     })
 

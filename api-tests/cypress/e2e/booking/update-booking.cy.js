@@ -1,6 +1,9 @@
+import { buildBooking } from '../../support/factories/booking.factory'
+
 describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }, () => {
   let authToken
   let bookingId
+  let baseBooking
   let updateData
 
   before(() => {
@@ -14,16 +17,8 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
   })
 
   beforeEach(() => {
-    cy.createBooking({
-      firstname: 'Original',
-      lastname: 'Name',
-      totalprice: 100,
-      depositpaid: false,
-      bookingdates: {
-        checkin: '2025-04-01',
-        checkout: '2025-04-10',
-      },
-    }).then((response) => {
+    baseBooking = buildBooking()
+    cy.createBooking(baseBooking).then((response) => {
       expect(response.status).to.eq(200)
       bookingId = response.body.bookingid
     })
@@ -99,7 +94,7 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
         expect(response.body.firstname).to.eq(updateData.partialUpdate.firstname)
         expect(response.body.totalprice).to.eq(updateData.partialUpdate.totalprice)
 
-        expect(response.body.lastname).to.eq('Name')
+        expect(response.body.lastname).to.eq(baseBooking.lastname)
       })
     })
 

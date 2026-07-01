@@ -218,6 +218,8 @@ jobs:
           ANDROID_DEVICE_NAME: emulator-5554
           ANDROID_PLATFORM_VERSION: '9.0'
           PLATFORM: android
+          MOBILE_USERNAME: ${{ secrets.MOBILE_USERNAME }}
+          MOBILE_PASSWORD: ${{ secrets.MOBILE_PASSWORD }}
 
       - name: Upload artefatos Mobile
         uses: actions/upload-artifact@v4

@@ -1,4 +1,11 @@
 const path = require('path')
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
+const { validateRequiredEnv } = require('../../scripts/validate-required-env')
+
+validateRequiredEnv(['MOBILE_USERNAME', 'MOBILE_PASSWORD'], process.env, {
+  label: 'os testes Mobile (login no My Demo App)',
+  hint: 'Crie mobile-tests/.env (veja README.md) ou exporte MOBILE_USERNAME/MOBILE_PASSWORD.',
+})
 
 exports.config = {
   runner: 'local',

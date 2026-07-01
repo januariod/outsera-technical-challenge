@@ -1,0 +1,299 @@
+{
+  "stats": {
+    "suites": 6,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-07-01T14:38:52.608Z",
+    "end": "2026-07-01T14:38:54.555Z",
+    "duration": 1947,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "12db4d34-15e2-4ea3-b525-e78f410f90f2",
+      "title": "",
+      "fullFile": "cypress/e2e/booking/contract-validation.cy.js",
+      "file": "cypress/e2e/booking/contract-validation.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "f2819fb0-250e-4574-92ff-eb90801f8318",
+          "title": "CONTRACT - Validação de Contratos da API Restful Booker",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "c1f3e7b4-bfc6-41f3-9922-ad4ddbf6e7c4",
+              "title": "Contrato POST /auth",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "resposta deve ter Content-Type application/json",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato POST /auth resposta deve ter Content-Type application/json",
+                  "timedOut": null,
+                  "duration": 377,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: {\n    username: Cypress.env('ADMIN_USERNAME'),\n    password: Cypress.env('ADMIN_PASSWORD')\n  }\n}).then(response => {\n  expect(response.headers['content-type']).to.include('application/json');\n  expect(response.body).to.be.an('object');\n});",
+                  "err": {},
+                  "uuid": "3064040a-7bc5-4514-8d23-d5d3e6bf725e",
+                  "parentUUID": "c1f3e7b4-bfc6-41f3-9922-ad4ddbf6e7c4",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "3064040a-7bc5-4514-8d23-d5d3e6bf725e"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 377,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "3aca1f5c-bbad-4532-bb41-3ced2bc65b73",
+              "title": "Contrato POST /booking",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "resposta de criação deve ter bookingid e booking object",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato POST /booking resposta de criação deve ter bookingid e booking object",
+                  "timedOut": null,
+                  "duration": 204,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.createBooking((0, _booking.buildBooking)()).then(response => {\n  expect(response.status).to.eq(200);\n  const schema = response.body;\n  expect(schema).to.have.all.keys(['bookingid', 'booking']);\n  expect(schema.bookingid).to.be.a('number');\n  expect(schema.booking).to.be.an('object');\n  const booking = schema.booking;\n  expect(booking).to.have.property('firstname').that.is.a('string');\n  expect(booking).to.have.property('lastname').that.is.a('string');\n  expect(booking).to.have.property('totalprice').that.is.a('number');\n  expect(booking).to.have.property('depositpaid').that.is.a('boolean');\n  expect(booking).to.have.property('bookingdates').that.is.an('object');\n  expect(booking.bookingdates).to.have.property('checkin').that.is.a('string');\n  expect(booking.bookingdates).to.have.property('checkout').that.is.a('string');\n});",
+                  "err": {},
+                  "uuid": "2b886982-3fcb-4b89-8d77-b0f8bc42507d",
+                  "parentUUID": "3aca1f5c-bbad-4532-bb41-3ced2bc65b73",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "2b886982-3fcb-4b89-8d77-b0f8bc42507d"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 204,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "66541b4b-5b27-4aad-a629-9723ebe19a7f",
+              "title": "Contrato GET /booking",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "lista de bookings deve ser um array de objetos com bookingid",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato GET /booking lista de bookings deve ser um array de objetos com bookingid",
+                  "timedOut": null,
+                  "duration": 528,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.getAllBookings().then(response => {\n  expect(response.status).to.eq(200);\n  expect(response.body).to.be.an('array');\n  if (response.body.length > 0) {\n    const sample = response.body[0];\n    expect(sample).to.be.an('object');\n    expect(sample).to.have.property('bookingid').that.is.a('number');\n  }\n});",
+                  "err": {},
+                  "uuid": "b919e081-21a3-4b4c-bf27-b172c4993565",
+                  "parentUUID": "66541b4b-5b27-4aad-a629-9723ebe19a7f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "b919e081-21a3-4b4c-bf27-b172c4993565"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 528,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "52d54f03-8c84-4613-952f-154c5fcd7ec4",
+              "title": "Contrato GET /booking/:id",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "booking individual deve ter todos os campos do schema",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato GET /booking/:id booking individual deve ter todos os campos do schema",
+                  "timedOut": null,
+                  "duration": 190,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.getBooking(createdBookingId).then(response => {\n  expect(response.status).to.eq(200);\n  const booking = response.body;\n  const dateRegex = /^\\d{4}-\\d{2}-\\d{2}$/;\n  expect(booking.bookingdates.checkin).to.match(dateRegex);\n  expect(booking.bookingdates.checkout).to.match(dateRegex);\n});",
+                  "err": {},
+                  "uuid": "c126676d-4f64-4c55-bc06-f58d323bc7ee",
+                  "parentUUID": "52d54f03-8c84-4613-952f-154c5fcd7ec4",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "c126676d-4f64-4c55-bc06-f58d323bc7ee"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 190,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "0b3cdc04-66b7-427b-a764-92bcc08ae012",
+              "title": "Contrato Headers HTTP",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "GET /booking deve retornar header Content-Type correto",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato Headers HTTP GET /booking deve retornar header Content-Type correto",
+                  "timedOut": null,
+                  "duration": 336,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method,\n  url,\n  headers: {\n    'Accept': 'application/json'\n  },\n  failOnStatusCode: false\n}).then(response => {\n  if (response.status === 200) {\n    expect(response.headers).to.have.property('content-type');\n    expect(response.headers['content-type']).to.include('application/json');\n  }\n});",
+                  "err": {},
+                  "uuid": "b9a1caa7-26d2-4871-80d4-50b755f0706e",
+                  "parentUUID": "0b3cdc04-66b7-427b-a764-92bcc08ae012",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "GET /booking/1 deve retornar header Content-Type correto",
+                  "fullTitle": "CONTRACT - Validação de Contratos da API Restful Booker Contrato Headers HTTP GET /booking/1 deve retornar header Content-Type correto",
+                  "timedOut": null,
+                  "duration": 175,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method,\n  url,\n  headers: {\n    'Accept': 'application/json'\n  },\n  failOnStatusCode: false\n}).then(response => {\n  if (response.status === 200) {\n    expect(response.headers).to.have.property('content-type');\n    expect(response.headers['content-type']).to.include('application/json');\n  }\n});",
+                  "err": {},
+                  "uuid": "94d2dcd2-0178-4386-9242-f69c1322f6c3",
+                  "parentUUID": "0b3cdc04-66b7-427b-a764-92bcc08ae012",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "b9a1caa7-26d2-4871-80d4-50b755f0706e",
+                "94d2dcd2-0178-4386-9242-f69c1322f6c3"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 511,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/api",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
