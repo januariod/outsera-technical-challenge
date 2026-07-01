@@ -5,7 +5,7 @@ describe('E2E Mobile - Fluxos de Autenticação e Checkout', () => {
 
   it('Deve realizar login com sucesso e navegar para a tela de produtos', async () => {
     await LoginPage.navigateToLogin()
-    await LoginPage.login('bob@example.com', '10203040')
+    await LoginPage.login(process.env.MOBILE_USERNAME, process.env.MOBILE_PASSWORD)
 
     const isProductsVisible = await LoginPage.productsTitle.waitForDisplayed({ timeout: 5000 })
     expect(isProductsVisible).toBe(true)

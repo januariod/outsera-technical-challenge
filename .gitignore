@@ -33,6 +33,8 @@ reports/**/screenshots/
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
 
 # ── IDE ───────────────────────────────────────────────────────────────────────
 .idea/
@@ -56,20 +58,17 @@ temp/
 # ── Cypress ────────────────────────────────────────────────────────────
 .cypress_cache/
 api-tests/cypress.env.json
+e2e-tests/cypress.env.json
 
 # ── Mobile ────────────────────────────────────────────────────────────
 mobile-tests/app/*.apk
+mobile-tests/.env
 
 # Optional npm cache directory
 .npm
 
 # Optional eslint cache
 .eslintcache
-
-# dotenv environment variable files
-.env
-.env.*
-!.env.example
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test

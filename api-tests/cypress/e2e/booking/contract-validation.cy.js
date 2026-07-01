@@ -1,18 +1,10 @@
+import { buildBooking } from '../../support/factories/booking.factory'
+
 describe('CONTRACT - Validação de Contratos da API Restful Booker', { tags: ['@contract', '@smoke'] }, () => {
   let createdBookingId
 
   before(() => {
-    cy.createBooking({
-      firstname: 'Contract',
-      lastname: 'Test',
-      totalprice: 200,
-      depositpaid: true,
-      bookingdates: {
-        checkin: '2025-08-01',
-        checkout: '2025-08-15',
-      },
-      additionalneeds: 'Contract validation',
-    }).then((response) => {
+    cy.createBooking(buildBooking()).then((response) => {
       createdBookingId = response.body.bookingid
     })
   })
@@ -23,7 +15,10 @@ describe('CONTRACT - Validação de Contratos da API Restful Booker', { tags: ['
         method: 'POST',
         url: '/auth',
         headers: { 'Content-Type': 'application/json' },
-        body: { username: 'admin', password: 'password123' },
+        body: {
+          username: Cypress.env('ADMIN_USERNAME'),
+          password: Cypress.env('ADMIN_PASSWORD'),
+        },
       }).then((response) => {
         expect(response.headers['content-type']).to.include('application/json')
         expect(response.body).to.be.an('object')
@@ -33,13 +28,7 @@ describe('CONTRACT - Validação de Contratos da API Restful Booker', { tags: ['
 
   context('Contrato POST /booking', () => {
     it('resposta de criação deve ter bookingid e booking object', () => {
-      cy.createBooking({
-        firstname: 'Schema',
-        lastname: 'Checker',
-        totalprice: 100,
-        depositpaid: true,
-        bookingdates: { checkin: '2025-09-01', checkout: '2025-09-05' },
-      }).then((response) => {
+      cy.createBooking(buildBooking()).then((response) => {
         expect(response.status).to.eq(200)
 
         const schema = response.body

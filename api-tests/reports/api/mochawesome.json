@@ -1,0 +1,239 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-07-01T14:38:42.530Z",
+    "end": "2026-07-01T14:38:44.580Z",
+    "duration": 2050,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "eb1149e3-fd69-4668-b050-eff268545cd8",
+      "title": "",
+      "fullFile": "cypress/e2e/auth/auth.cy.js",
+      "file": "cypress/e2e/auth/auth.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "05e51b28-be41-4317-8fd4-fe00564e98e5",
+          "title": "AUTH - POST /auth",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "d12e6357-f7da-4488-8a6f-353cb9f3a003",
+              "title": "Cenários Positivos",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "deve retornar token válido com credenciais corretas",
+                  "fullTitle": "AUTH - POST /auth Cenários Positivos deve retornar token válido com credenciais corretas",
+                  "timedOut": null,
+                  "duration": 828,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: validCredentials\n}).then(response => {\n  expect(response.status).to.eq(200);\n  cy.assertResponseHeaders(response);\n  expect(response.body).to.have.property('token');\n  expect(response.body.token).to.be.a('string').and.have.length.greaterThan(0);\n  expect(response.body.token).to.not.eq('Bad credentials');\n});",
+                  "err": {},
+                  "uuid": "ba32d4bd-7f20-4fa5-a3c3-332a1bad26bc",
+                  "parentUUID": "d12e6357-f7da-4488-8a6f-353cb9f3a003",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "deve gerar tokens diferentes em chamadas consecutivas",
+                  "fullTitle": "AUTH - POST /auth Cenários Positivos deve gerar tokens diferentes em chamadas consecutivas",
+                  "timedOut": null,
+                  "duration": 343,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const tokens = [];\ncy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: validCredentials\n}).then(r1 => {\n  tokens.push(r1.body.token);\n  cy.request({\n    method: 'POST',\n    url: '/auth',\n    headers: {\n      'Content-Type': 'application/json'\n    },\n    body: validCredentials\n  }).then(r2 => {\n    tokens.push(r2.body.token);\n    tokens.forEach(t => {\n      expect(t).to.be.a('string').and.have.length.greaterThan(0);\n    });\n  });\n});",
+                  "err": {},
+                  "uuid": "f5ceac7a-ea8d-496d-8c79-70195e85ab0e",
+                  "parentUUID": "d12e6357-f7da-4488-8a6f-353cb9f3a003",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "ba32d4bd-7f20-4fa5-a3c3-332a1bad26bc",
+                "f5ceac7a-ea8d-496d-8c79-70195e85ab0e"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1171,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "f3edbaa6-7cc5-48ee-8ce7-f5fdc4ad7b83",
+              "title": "Cenários Negativos",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "deve retornar \"Bad credentials\" com senha inválida",
+                  "fullTitle": "AUTH - POST /auth Cenários Negativos deve retornar \"Bad credentials\" com senha inválida",
+                  "timedOut": null,
+                  "duration": 184,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: credentials.invalidPassword,\n  failOnStatusCode: false\n}).then(response => {\n  expect(response.status).to.eq(200);\n  expect(response.body).to.have.property('reason');\n  expect(response.body.reason).to.include('Bad credentials');\n});",
+                  "err": {},
+                  "uuid": "50573ce0-9b4c-4909-98c4-4a1059aa13ec",
+                  "parentUUID": "f3edbaa6-7cc5-48ee-8ce7-f5fdc4ad7b83",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "deve retornar \"Bad credentials\" com usuário inválido",
+                  "fullTitle": "AUTH - POST /auth Cenários Negativos deve retornar \"Bad credentials\" com usuário inválido",
+                  "timedOut": null,
+                  "duration": 183,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: credentials.invalidUsername,\n  failOnStatusCode: false\n}).then(response => {\n  expect(response.status).to.eq(200);\n  expect(response.body).to.have.property('reason');\n  expect(response.body.reason).to.include('Bad credentials');\n});",
+                  "err": {},
+                  "uuid": "3cd87228-79f3-4f70-aa72-8c42d27ac4e2",
+                  "parentUUID": "f3edbaa6-7cc5-48ee-8ce7-f5fdc4ad7b83",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "deve retornar erro com credenciais vazias",
+                  "fullTitle": "AUTH - POST /auth Cenários Negativos deve retornar erro com credenciais vazias",
+                  "timedOut": null,
+                  "duration": 175,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  headers: {\n    'Content-Type': 'application/json'\n  },\n  body: credentials.emptyCredentials,\n  failOnStatusCode: false\n}).then(response => {\n  expect(response.status).to.eq(200);\n  expect(response.body).to.have.property('reason');\n});",
+                  "err": {},
+                  "uuid": "5f3736d4-864a-4086-b2b6-60b9e7856b64",
+                  "parentUUID": "f3edbaa6-7cc5-48ee-8ce7-f5fdc4ad7b83",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "deve rejeitar requisição sem Content-Type",
+                  "fullTitle": "AUTH - POST /auth Cenários Negativos deve rejeitar requisição sem Content-Type",
+                  "timedOut": null,
+                  "duration": 167,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.request({\n  method: 'POST',\n  url: '/auth',\n  body: credentials.valid,\n  failOnStatusCode: false\n}).then(response => {\n  expect(response.status).to.be.oneOf([200, 400, 415]);\n});",
+                  "err": {},
+                  "uuid": "dfb2494b-fe37-48a6-94eb-fb2098790671",
+                  "parentUUID": "f3edbaa6-7cc5-48ee-8ce7-f5fdc4ad7b83",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "50573ce0-9b4c-4909-98c4-4a1059aa13ec",
+                "3cd87228-79f3-4f70-aa72-8c42d27ac4e2",
+                "5f3736d4-864a-4086-b2b6-60b9e7856b64",
+                "dfb2494b-fe37-48a6-94eb-fb2098790671"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 709,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/api",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

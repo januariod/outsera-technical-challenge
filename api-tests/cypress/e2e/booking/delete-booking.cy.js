@@ -1,3 +1,5 @@
+import { buildBooking } from '../../support/factories/booking.factory'
+
 describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () => {
   let authToken
   let bookingIdToDelete
@@ -9,16 +11,7 @@ describe('BOOKING - DELETE /booking/:id', { tags: ['@booking', '@delete'] }, () 
   })
 
   beforeEach(() => {
-    cy.createBooking({
-      firstname: 'Delete',
-      lastname: 'Me',
-      totalprice: 50,
-      depositpaid: false,
-      bookingdates: {
-        checkin: '2025-05-01',
-        checkout: '2025-05-05',
-      },
-    }).then((response) => {
+    cy.createBooking(buildBooking()).then((response) => {
       expect(response.status).to.eq(200, 'Setup: criação da reserva para deletar')
       bookingIdToDelete = response.body.bookingid
     })

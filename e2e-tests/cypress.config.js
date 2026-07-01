@@ -6,6 +6,8 @@ const {
 const {
   createEsbuildPlugin,
 } = require('@badeball/cypress-cucumber-preprocessor/esbuild')
+const { resolveEnvironment, DEFAULT_ENV } = require('./cypress/config/environments')
+const { validateRequiredEnv } = require('../scripts/validate-required-env')
 
 module.exports = defineConfig({
   reporter: '../node_modules/mochawesome',
@@ -21,7 +23,6 @@ module.exports = defineConfig({
     fixturesFolder: 'cypress/fixtures',
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
-    baseUrl: 'https://www.saucedemo.com',
     viewportWidth: 1280,
     viewportHeight: 720,
     responseTimeout: 30000,
@@ -35,6 +36,15 @@ module.exports = defineConfig({
     },
     experimentalRunAllSpecs: true,
     async setupNodeEvents(on, config) {
+      validateRequiredEnv(['SAUCE_USERNAME', 'SAUCE_PASSWORD'], config.env, {
+        label: 'os testes E2E (login no SauceDemo)',
+        hint: 'Crie e2e-tests/cypress.env.json (veja README.md) ou exporte CYPRESS_SAUCE_USERNAME/CYPRESS_SAUCE_PASSWORD.',
+      })
+
+      const environment = resolveEnvironment(config.env.ENV || process.env.CYPRESS_ENV || DEFAULT_ENV)
+      config.baseUrl = environment.baseUrl
+      config.env.ENV = environment.name
+
       await addCucumberPreprocessorPlugin(on, config)
 
       on(
@@ -50,6 +60,8 @@ module.exports = defineConfig({
           return null
         },
       })
+
+      console.log(`\nAmbiente E2E: ${environment.name} → ${environment.baseUrl}\n`)
       return config
     },
   },

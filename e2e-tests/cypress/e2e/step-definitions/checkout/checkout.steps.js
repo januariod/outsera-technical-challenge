@@ -18,12 +18,24 @@ When('acesso o carrinho de compras', () => {
   InventoryPage.goToCart()
 })
 
+Then('o contador do carrinho deve exibir {string}', (quantidade) => {
+  InventoryPage.verifyCartBadgeCount(quantidade)
+})
+
+Then('o carrinho deve conter o item {string} com preço {string} e quantidade {string}', (nome, preco, quantidade) => {
+  CheckoutPage.verifyCartItem(nome, preco, Number(quantidade))
+})
+
 When('sigo para o checkout', () => {
   CheckoutPage.startCheckout()
 })
 
 When('preencho os dados de entrega com Nome {string}, Sobrenome {string} e CEP {string}', (nome, sobrenome, cep) => {
   CheckoutPage.fillDeliveryInformation(nome, sobrenome, cep)
+})
+
+Then('o resumo da compra deve exibir subtotal {string}, imposto {string} e total {string}', (subtotal, imposto, total) => {
+  CheckoutPage.verifyOrderSummary({ subtotal, tax: imposto, total })
 })
 
 When('confirmo o resumo da compra', () => {

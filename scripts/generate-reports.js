@@ -52,8 +52,20 @@ function generateScopeReport({ dir, title }) {
 
 console.log(chalk.cyan('\n📊 Gerando relatórios por escopo...\n'))
 
+const requestedScope = process.argv[2]
+const scopesToRun = requestedScope
+  ? SCOPES.filter((s) => s.dir === requestedScope)
+  : SCOPES
+
+if (requestedScope && scopesToRun.length === 0) {
+  console.error(
+    chalk.red(`✘ Escopo inválido: "${requestedScope}". Use um de: ${SCOPES.map((s) => s.dir).join(', ')}`),
+  )
+  process.exit(1)
+}
+
 let generated = 0
-SCOPES.forEach((scope) => {
+scopesToRun.forEach((scope) => {
   if (generateScopeReport(scope)) generated += 1
 })
 
