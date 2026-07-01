@@ -13,6 +13,7 @@ Cypress.Commands.add('createAuthToken', (credentials = {}, attemptsLeft = 3) => 
 
     if (!hasValidToken && attemptsLeft > 1) {
       cy.log(`⚠ Falha transitória ao autenticar ("${response.body?.reason || response.status}"). Tentando novamente... (${attemptsLeft - 1} tentativa(s) restante(s))`)
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
       return cy.wait(1500).then(() => cy.createAuthToken(credentials, attemptsLeft - 1))
     }
 
