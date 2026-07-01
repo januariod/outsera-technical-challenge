@@ -11,6 +11,11 @@ When('informo o usuário {string} e a senha {string}', (username, password) => {
   LoginPage.fillPassword(password)
 })
 
+When('informo minhas credenciais válidas', () => {
+  LoginPage.fillUsername(Cypress.env('SAUCE_USERNAME'))
+  LoginPage.fillPassword(Cypress.env('SAUCE_PASSWORD'))
+})
+
 When('clico no botão de login', () => {
   LoginPage.clickLogin()
 })

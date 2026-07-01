@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { buildBooking } from '../../support/factories/booking.factory'
 
 describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }, () => {
@@ -7,9 +8,16 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
   let updateData
 
   before(() => {
-    cy.fixture('booking/update-booking').then((data) => {
-      updateData = data
-    })
+    updateData = {
+      fullUpdate: buildBooking(),
+      partialUpdate: {
+        firstname: faker.person.firstName(),
+        totalprice: faker.number.int({ min: 100, max: 2000 }),
+      },
+      priceUpdate: {
+        totalprice: faker.number.int({ min: 100, max: 2000 }),
+      },
+    }
 
     cy.createAuthToken().then((token) => {
       authToken = token
