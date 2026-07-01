@@ -3,13 +3,12 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
     username: Cypress.env('ADMIN_USERNAME'),
     password: Cypress.env('ADMIN_PASSWORD')
   }
-  let credentials
 
-  before(() => {
-    cy.fixture('auth/credentials').then((data) => {
-      credentials = data
-    })
-  })
+  const credentials = {
+    invalidPassword: { username: validCredentials.username, password: 'wrongpassword' },
+    invalidUsername: { username: 'notexistinguser', password: validCredentials.password },
+    emptyCredentials: { username: '', password: '' },
+  }
 
   context('Cenários Positivos', () => {
     it('deve retornar token válido com credenciais corretas', () => {

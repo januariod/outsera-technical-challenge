@@ -1,11 +1,17 @@
+import { buildBooking } from '../../support/factories/booking.factory'
+
 describe('BOOKING - POST /booking', { tags: ['@booking', '@create', '@smoke'] }, () => {
   let validBookings
   let invalidBookings
 
   before(() => {
-    cy.fixture('booking/valid-booking').then((data) => {
-      validBookings = data
-    })
+    validBookings = {
+      standard: buildBooking(),
+      minimal: buildBooking({ additionalneeds: undefined }),
+      withSpecialCharacters: buildBooking({ firstname: 'João', lastname: 'García-López' }),
+      highValue: buildBooking({ totalprice: 99999 }),
+    }
+
     cy.fixture('booking/invalid-booking').then((data) => {
       invalidBookings = data
     })

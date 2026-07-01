@@ -10,7 +10,7 @@ Funcionalidade: Tarefa 1 - Autenticação e Navegação
 
   @positivo
   Cenário: Login válido e navegação para a loja
-    Quando informo o usuário "standard_user" e a senha "secret_sauce"
+    Quando informo minhas credenciais válidas
     E clico no botão de login
     Então a navegação deve ser bem-sucedida para a página de produtos
 
