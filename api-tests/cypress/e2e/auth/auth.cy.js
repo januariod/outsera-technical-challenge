@@ -100,10 +100,36 @@ describe('AUTH - POST /auth', { tags: ['@auth', '@smoke'] }, () => {
       cy.request({
         method: 'POST',
         url: '/auth',
-        body: credentials.valid,
+        body: validCredentials,
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.be.oneOf([200, 400, 415])
+      })
+    })
+
+    it('deve retornar erro ao enviar username sem password', () => {
+      cy.request({
+        method: 'POST',
+        url: '/auth',
+        headers: { 'Content-Type': 'application/json' },
+        body: { username: validCredentials.username },
+        failOnStatusCode: false,
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.have.property('reason')
+      })
+    })
+
+    it('deve retornar erro ao enviar body vazio', () => {
+      cy.request({
+        method: 'POST',
+        url: '/auth',
+        headers: { 'Content-Type': 'application/json' },
+        body: {},
+        failOnStatusCode: false,
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.have.property('reason')
       })
     })
   })

@@ -173,17 +173,6 @@ CYPRESS_ENV=staging npm run test:api
 
 > Neste desafio todos os ambientes apontam para a mesma URL pública, mas a estrutura já está pronta para receber URLs distintas por ambiente (basta editar o `environments.js` correspondente).
 
-### Dados de Teste Dinâmicos (API)
-
-As reservas usadas nos testes de API são geradas dinamicamente via **@faker-js/faker** através da factory `api-tests/cypress/support/factories/booking.factory.js`. Isso elimina valores "chumbados" e garante dados únicos a cada execução, mantendo determinismo onde a asserção precisa (via `overrides`):
-
-```js
-import { buildBooking } from '../../support/factories/booking.factory'
-
-buildBooking()                          // reserva 100% aleatória
-buildBooking({ firstname: 'Daniel' })   // aleatória, mas com um campo fixo
-```
-
 ---
 
 ## Como Executar os Testes
@@ -213,6 +202,7 @@ npm run test:e2e -- --env ENV=staging   # Executa contra outro ambiente
 #### Pré-requisitos e Setup do Ambiente
 
 1. **Java JDK 17+** — necessário para o Android SDK e o Appium.
+
    ```bash
    sudo apt install openjdk-17-jdk   # Linux (Debian/Ubuntu)
    # ou baixe em https://adoptium.net/ para Windows/macOS
@@ -226,6 +216,7 @@ npm run test:e2e -- --env ENV=staging   # Executa contra outro ambiente
    - `Intel x86 Emulator Accelerator (HAXM)` (ou suporte a KVM no Linux)
 
    Configure as variáveis de ambiente do SDK (adicione ao `.bashrc`/`.zshrc` ou variáveis de sistema):
+
    ```bash
    export ANDROID_HOME=$HOME/Android/Sdk
    export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools
@@ -236,16 +227,20 @@ npm run test:e2e -- --env ENV=staging   # Executa contra outro ambiente
    - Clique em **Create Device**, escolha um perfil de hardware (ex.: Pixel 5).
    - Selecione uma imagem de sistema (ex.: API 28/29/30 - `google_apis`, x86_64). Baixe a imagem se necessário.
    - Finalize e inicie o emulador clicando no ▶ ao lado do dispositivo criado (ou via terminal):
+
      ```bash
      emulator -list-avds
      emulator -avd <nome_do_avd>
      ```
+
    - Confirme que o dispositivo está visível e "online":
+
      ```bash
      adb devices
      ```
 
 4. **Instalar o Appium e o driver Android globalmente:**
+
    ```bash
    npm install -g appium@2.5.0
    npx appium driver install uiautomator2
@@ -254,6 +249,7 @@ npm run test:e2e -- --env ENV=staging   # Executa contra outro ambiente
 5. **Configurar credenciais do app de teste:** crie `mobile-tests/.env` conforme a seção [Configuração de Ambiente](#configuração-de-ambiente).
 
 6. **Baixar o APK de teste** (não versionado no repositório):
+
    ```bash
    mkdir -p mobile-tests/app
    curl -L -o mobile-tests/app/Android-MyDemoAppRN.apk https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk

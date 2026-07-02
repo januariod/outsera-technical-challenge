@@ -1,4 +1,4 @@
-# 📊 Análise de Teste de Carga (K6)
+# Análise de Teste de Carga (K6)
 
 ## 1. Escopo e Cenário Executado
 

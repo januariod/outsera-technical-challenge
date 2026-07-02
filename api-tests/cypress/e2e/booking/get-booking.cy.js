@@ -63,6 +63,35 @@ describe('BOOKING - GET /booking', { tags: ['@booking', '@get', '@smoke'] }, () 
         expect(response.body).to.be.an('array')
       })
     })
+
+    it('deve filtrar reservas por firstname e lastname combinados', () => {
+      cy.getAllBookings({
+        firstname: createdBooking.firstname,
+        lastname: createdBooking.lastname,
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.be.an('array')
+        const found = response.body.find((b) => b.bookingid === createdBookingId)
+        expect(found, 'reserva criada deve aparecer no filtro combinado').to.not.be.undefined
+      })
+    })
+
+    it('deve filtrar reservas por checkout', () => {
+      cy.getAllBookings({ checkout: createdBooking.bookingdates.checkout }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.be.an('array')
+      })
+    })
+
+    it('deve filtrar reservas por intervalo de checkin e checkout', () => {
+      cy.getAllBookings({
+        checkin: createdBooking.bookingdates.checkin,
+        checkout: createdBooking.bookingdates.checkout,
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.be.an('array')
+      })
+    })
   })
 
   context('GET /booking/:id - Buscar reserva por ID', () => {

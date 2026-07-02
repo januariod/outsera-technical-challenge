@@ -34,3 +34,11 @@ Funcionalidade: Tarefa 2 - Fluxo de Checkout de E-commerce
       |        | QA        | 12345-678 | Error: First Name is required  |
       | Daniel |           | 12345-678 | Error: Last Name is required   |
       | Daniel | QA        |           | Error: Postal Code is required |
+
+  @positivo
+  Cenário: Cancelar o checkout e retornar ao carrinho
+    Quando adiciono o produto "Mochila" ao carrinho
+    E acesso o carrinho de compras
+    E sigo para o checkout
+    E cancelo o checkout
+    Então devo retornar para a página do carrinho de compras

@@ -15,10 +15,21 @@ class CheckoutPage {
     totalLabel: () => cy.get('.summary_total_label'),
     completeHeader: () => cy.get('.complete-header'),
     errorMessage: () => cy.get('[data-test="error"]'),
+    cancelButton: () => cy.get('[data-test="cancel"]'),
   }
 
   startCheckout() {
     this.elements.checkoutButton().click()
+    return this
+  }
+
+  cancelCheckout() {
+    this.elements.cancelButton().click()
+    return this
+  }
+
+  verifyOnCartPage() {
+    cy.url().should('include', '/cart.html')
     return this
   }
 

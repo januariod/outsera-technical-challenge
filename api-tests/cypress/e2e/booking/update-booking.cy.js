@@ -126,5 +126,34 @@ describe('BOOKING - PUT & PATCH /booking/:id', { tags: ['@booking', '@update'] }
         expect(response.status).to.eq(403)
       })
     })
+
+    it('deve atualizar apenas depositpaid mantendo os demais campos originais', () => {
+      const depositUpdate = { depositpaid: !baseBooking.depositpaid }
+
+      cy.patchBooking(bookingId, depositUpdate, authToken).then((response) => {
+        expect(response.status).to.eq(200)
+        cy.assertBookingSchema(response.body)
+
+        expect(response.body.depositpaid).to.eq(depositUpdate.depositpaid)
+        expect(response.body.firstname).to.eq(baseBooking.firstname)
+        expect(response.body.lastname).to.eq(baseBooking.lastname)
+        expect(response.body.totalprice).to.eq(baseBooking.totalprice)
+      })
+    })
+
+    it('deve manter o último valor aplicado ao encadear múltiplos PATCH (idempotência)', () => {
+      cy.patchBooking(bookingId, { totalprice: 111 }, authToken).then((firstResponse) => {
+        expect(firstResponse.status).to.eq(200)
+
+        cy.patchBooking(bookingId, { totalprice: 222 }, authToken).then((secondResponse) => {
+          expect(secondResponse.status).to.eq(200)
+          expect(secondResponse.body.totalprice).to.eq(222)
+
+          cy.getBooking(bookingId).then((getResponse) => {
+            expect(getResponse.body.totalprice).to.eq(222, 'GET deve refletir o último PATCH aplicado')
+          })
+        })
+      })
+    })
   })
 })
