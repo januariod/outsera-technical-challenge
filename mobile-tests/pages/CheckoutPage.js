@@ -6,7 +6,11 @@ class CheckoutPage {
   }
 
   get cartBadge() { return $('~cart badge') }
+  get cartBadgeCount() { return $('~cart badge').$('android.widget.TextView') }
+  get emptyCartMessage() { return $('//*[@text="No Items"]') }
   get proceedToCheckoutBtn() { return $('~Proceed To Checkout button') }
+  get cartItemRow() { return $('~product row') }
+  get removeItemButton() { return $('~remove item') }
 
   get fullNameInput() { return $('~Full Name* input field') }
   get addressInput() { return $('~Address Line 1* input field') }
@@ -37,6 +41,20 @@ class CheckoutPage {
     await this.cartBadge.click()
     await this.proceedToCheckoutBtn.waitForDisplayed()
     await this.proceedToCheckoutBtn.click()
+  }
+
+  async addFirstItemToCart() {
+    await this.firstProduct.waitForDisplayed()
+    await this.firstProduct.click()
+
+    await this.addToCartButton.waitForDisplayed()
+    await this.addToCartButton.click()
+  }
+
+  async removeFirstItemFromCart() {
+    await this.cartBadge.click()
+    await this.cartItemRow.waitForDisplayed()
+    await this.removeItemButton.click()
   }
 
   async fillShippingForm(data) {

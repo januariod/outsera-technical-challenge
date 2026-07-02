@@ -49,3 +49,11 @@ Then('devo ver a tela de sucesso com a mensagem {string}', (mensagemSucesso) => 
 Then('devo ver a mensagem de erro no checkout indicando {string}', (mensagemErro) => {
   CheckoutPage.verifyCheckoutError(mensagemErro)
 })
+
+When('cancelo o checkout', () => {
+  CheckoutPage.cancelCheckout()
+})
+
+Then('devo retornar para a página do carrinho de compras', () => {
+  CheckoutPage.verifyOnCartPage()
+})
